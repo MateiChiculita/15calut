@@ -6,51 +6,51 @@
     <title>Yutoob — Single File</title>
     <style>
       :root{
-        --bg:#0f1724;
-        --surface:#0b1220;
-        --muted:#9aa6bd;
-        --accent:#ff3b30;
-        --brand:#6c5ce7;
-        --card:#0f1728;
-        --glass: rgba(255,255,255,0.04);
+        --bg:#160b05;
+        --surface:#260f08;
+        --muted:#f6d1b1;
+        --accent:#ff6a00;
+        --brand:#ff4d25;
+        --card:#2d1209;
+        --glass: rgba(255,255,255,0.06);
       }
       *{box-sizing:border-box}
-      body{margin:0;background:linear-gradient(180deg,#071028 0%,#071021 40%,#081226 100%);color:#e6eef8;font-family:Inter,Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+      body{margin:0;background:linear-gradient(180deg,#220b04 0%,#1b0c05 45%,#120803 100%);color:#f7e4d9;font-family:Inter,Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}
       a.skip{position:absolute;left:-999px;top:auto;width:1px;height:1px;overflow:hidden}
       a.skip:focus{left:12px;top:12px;background:#fff;color:#000;padding:8px 12px;border-radius:6px;text-decoration:none}
-      .topbar{height:64px;display:flex;align-items:center;padding:0 20px;background:transparent;border-bottom:1px solid rgba(255,255,255,0.04)}
+      .topbar{height:64px;display:flex;align-items:center;padding:0 20px;background:transparent;border-bottom:1px solid rgba(255,255,255,0.06)}
       .logo{font-weight:800;color:var(--brand);font-size:22px;margin-right:18px;letter-spacing:0.6px}
-      .search{flex:1;max-width:680px;padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);color:var(--muted)}
+      .search{flex:1;max-width:680px;padding:10px 14px;border-radius:10px;border:1px solid rgba(255,186,132,0.18);background:rgba(255,255,255,0.04);color:var(--muted)}
       .layout{display:flex;gap:20px;padding:18px}
       .sidebar{width:220px;padding:12px}
       .side-item{padding:10px;border-radius:8px;color:var(--muted);margin-bottom:8px}
-      .side-item.active{background:rgba(255,255,255,0.03);color:#fff}
+      .side-item.active{background:rgba(255,106,0,0.14);color:#fff}
       .main{flex:1}
-      .hero{display:flex;align-items:center;justify-content:space-between;padding:22px;border-radius:12px;background:linear-gradient(90deg, rgba(108,92,231,0.15), rgba(255,59,48,0.1));margin-bottom:18px}
+      .hero{display:flex;align-items:center;justify-content:space-between;padding:22px;border-radius:12px;background:linear-gradient(90deg, rgba(255,106,0,0.22), rgba(255,77,35,0.18));margin-bottom:18px}
       .hero h1{margin:0;font-size:22px;color:#fff}
       .hero p{margin:6px 0 0;color:var(--muted)}
       .hero .cta{display:flex;gap:10px}
       .cta .btn-primary{background:linear-gradient(90deg,var(--brand),var(--accent));color:#fff;padding:8px 12px;border-radius:10px;border:0;cursor:pointer}
       .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
-      .video-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));cursor:pointer;border-radius:12px;overflow:hidden;position:relative;transition:transform .18s ease,box-shadow .18s ease}
-      .video-card:focus{outline:3px solid rgba(108,92,231,0.28);transform:translateY(-6px);box-shadow:0 10px 30px rgba(2,6,23,0.6)}
-      .video-card:hover{transform:translateY(-6px);box-shadow:0 8px 24px rgba(2,6,23,0.6)}
+      .video-card{background:linear-gradient(180deg, rgba(255,125,57,0.06), rgba(255,120,53,0.04));cursor:pointer;border-radius:12px;overflow:hidden;position:relative;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
+      .video-card:focus{outline:3px solid rgba(255,106,0,0.35);transform:translateY(-6px);box-shadow:0 10px 30px rgba(37,11,9,0.65)}
+      .video-card:hover{transform:translateY(-6px);box-shadow:0 8px 24px rgba(37,11,9,0.55)}
       .thumb{position:relative}
       .thumb img{width:100%;height:150px;object-fit:cover;background:#000;display:block}
-      .thumb::after{content:'';position:absolute;left:0;right:0;bottom:0;height:48px;background:linear-gradient(180deg,transparent,rgba(0,0,0,0.4));}
+      .thumb::after{content:'';position:absolute;left:0;right:0;bottom:0;height:48px;background:linear-gradient(180deg,transparent,rgba(0,0,0,0.55));}
       .score-badge{position:absolute;left:8px;top:8px;background:linear-gradient(90deg,var(--brand),var(--accent));color:#fff;padding:6px 8px;border-radius:999px;font-size:12px;font-weight:700}
-      .like-btn{position:absolute;right:8px;top:8px;background:rgba(255,255,255,0.06);border:0;padding:6px;border-radius:8px;cursor:pointer;color:#fff}
+      .like-btn{position:absolute;right:8px;top:8px;background:rgba(255,255,255,0.08);border:0;padding:6px;border-radius:8px;cursor:pointer;color:#fff}
       .meta{padding:12px}
       .title{font-size:15px;font-weight:700;color:#fff}
       .channel{font-size:13px;color:var(--muted);margin-top:6px}
-      .modal{position:fixed;inset:0;background:linear-gradient(180deg,rgba(2,6,23,0.6),rgba(2,6,23,0.9));display:flex;align-items:center;justify-content:center;padding:24px}
-      .player{width:900px;max-width:100%;background:linear-gradient(180deg,#071430,#051026);border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.04)}
+      .modal{position:fixed;inset:0;background:linear-gradient(180deg,rgba(38,9,4,0.76),rgba(18,7,4,0.92));display:flex;align-items:center;justify-content:center;padding:24px}
+      .player{width:900px;max-width:100%;background:linear-gradient(180deg,#260c06,#150804);border-radius:12px;overflow:hidden;border:1px solid rgba(255,106,0,0.18)}
       .player video{width:100%;height:520px;background:#000;display:block}
       .player-title{padding:12px;font-weight:700;color:#fff}
       @media (max-width:900px){.sidebar{display:none}.player video{height:260px}}
-      .btn{padding:8px 12px;border-radius:8px;border:0;background:rgba(255,255,255,0.04);cursor:pointer;color:#fff}
-      .btn:focus{outline:3px solid rgba(255,255,255,0.06)}
-      .stats-debug{position:fixed;right:12px;bottom:12px;background:rgba(10,14,22,0.9);padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);max-width:360px;max-height:320px;overflow:auto;font-size:12px;color:var(--muted)}
+      .btn{padding:8px 12px;border-radius:8px;border:0;background:linear-gradient(90deg,rgba(255,106,0,0.9),rgba(255,77,35,0.9));cursor:pointer;color:#fff}
+      .btn:focus{outline:3px solid rgba(255,185,130,0.5)}
+      .stats-debug{position:fixed;right:12px;bottom:12px;background:rgba(35,11,6,0.92);padding:10px;border-radius:8px;border:1px solid rgba(255,106,0,0.14);max-width:360px;max-height:320px;overflow:auto;font-size:12px;color:var(--muted)}
     </style>
   </head>
   <body>
