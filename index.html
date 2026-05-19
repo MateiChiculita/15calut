@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Yutoob — Single File</title>
+    <title>MemeScope — Single File</title>
     <style>
       :root{
         --bg:#160b05;
@@ -103,9 +103,9 @@
       let currentPage = 'home'
 
       const webResults = [
-        {title:'Yutoob Search Engine', url:'#', description:'A warm, red-orange search engine experience that integrates Yutoob video discovery.'},
-        {title:'Yutoob Videos', url:'#', description:'Find local Yutoob videos, watch them instantly, and get personalized recommendations.'},
-        {title:'Yutoob Browser', url:'#', description:'A search browser home page with an integrated video playground.'}
+        {title:'MemeScope Search Engine', url:'#', description:'A warm, meme-style search experience that integrates Yutoob video discovery.'},
+        {title:'MemeScope Videos', url:'#', description:'Find local Yutoob videos, watch them instantly, and get personalized recommendations.'},
+        {title:'MemeScope Browser', url:'#', description:'A playful search browser home page with an integrated video playground.'}
       ]
 
       function executeSearch(){
@@ -119,22 +119,22 @@
 
         const topbar = document.createElement('header')
         topbar.className='topbar'
-        topbar.innerHTML = `<a class="skip" href="#main-content">Skip to content</a><div class="logo">Yutoob Search</div><div class="search-row"><input class="search" placeholder="Search the web" aria-label="Search the web"></div><button class="btn-primary" id="search-button">Search</button>`
+        topbar.innerHTML = `<a class="skip" href="#main-content">Skip to content</a><div class="logo">MemeScope</div><div class="search-row"><input class="search" placeholder="Search the web" aria-label="Search the web"></div><button class="btn-primary" id="search-button">Search</button>`
 
         const layout = document.createElement('div'); layout.className='layout'
-        const sidebar = document.createElement('aside'); sidebar.className='sidebar'; sidebar.setAttribute('role','navigation'); sidebar.innerHTML='<div class="side-item active">All</div><div class="side-item">Videos</div><div class="side-item">Yutoob</div>'
+        const sidebar = document.createElement('aside'); sidebar.className='sidebar'; sidebar.setAttribute('role','navigation'); sidebar.innerHTML='<div class="side-item active">All</div><div class="side-item">Videos</div><div class="side-item">MemeScope</div>'
         const main = document.createElement('main'); main.className='main'; main.id='main-content'; main.setAttribute('role','main');
 
         const hero = document.createElement('section'); hero.className='hero'
         if(currentPage === 'home'){
-          hero.innerHTML = `<div><h1>Search the web with Yutoob</h1><p>Video search, local playback, and a friendly browsing experience all in one place.</p></div><div class="hero-search"><input class="hero-input" type="search" placeholder="Search anything" value="${searchTerm}" aria-label="Search" /><button class="btn-primary" id="hero-search">Search</button></div>`
+          hero.innerHTML = `<div><h1>Search the web with MemeScope</h1><p>Video search, local playback, and a meme-approved browsing experience all in one place.</p></div><div class="hero-search"><input class="hero-input" type="search" placeholder="Search anything" value="${searchTerm}" aria-label="Search" /><button class="btn-primary" id="hero-search">Search</button></div>`
           main.appendChild(hero)
           const prompt = document.createElement('div')
           prompt.className = 'hero-sub'
-          prompt.innerHTML = '<p>Use the search bar above to find Yutoob videos and results.</p>'
+          prompt.innerHTML = '<p>Use the search bar above to find MemeScope results and Yutoob videos.</p>'
           main.appendChild(prompt)
         } else {
-          hero.innerHTML = `<div><h1>Search results for "${searchTerm}"</h1><p>Showing web results and Yutoob video recommendations.</p></div>`
+          hero.innerHTML = `<div><h1>Search results for "${searchTerm}"</h1><p>Showing web results and Yutoob video recommendations powered by MemeScope.</p></div>`
           main.appendChild(hero)
         }
 
@@ -148,7 +148,7 @@
           })
           resultsSection.appendChild(webList)
 
-          const videoHeading = document.createElement('div'); videoHeading.className='video-heading'; videoHeading.innerHTML = '<h2>Yutoob video results</h2>'
+          const videoHeading = document.createElement('div'); videoHeading.className='video-heading'; videoHeading.innerHTML = '<h2>MemeScope video results</h2>'
           main.appendChild(resultsSection)
           main.appendChild(videoHeading)
 
