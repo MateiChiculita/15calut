@@ -20,7 +20,18 @@
       a.skip:focus{left:12px;top:12px;background:#fff;color:#000;padding:8px 12px;border-radius:6px;text-decoration:none}
       .topbar{height:64px;display:flex;align-items:center;padding:0 20px;background:transparent;border-bottom:1px solid rgba(255,255,255,0.06)}
       .logo{font-weight:800;color:var(--brand);font-size:22px;margin-right:18px;letter-spacing:0.6px}
-      .search{flex:1;max-width:680px;padding:10px 14px;border-radius:10px;border:1px solid rgba(255,186,132,0.18);background:rgba(255,255,255,0.04);color:var(--muted)}
+      .search-row{flex:1;display:flex;align-items:center;max-width:680px}
+      .search{width:100%;padding:10px 14px;border-radius:10px;border:1px solid rgba(255,186,132,0.18);background:rgba(255,255,255,0.04);color:var(--muted)}
+      .hero-search{display:flex;gap:12px;flex-wrap:wrap;align-items:center;max-width:720px;margin-top:16px}
+      .hero-input{flex:1;padding:14px 16px;border-radius:12px;border:1px solid rgba(255,186,132,0.18);background:rgba(255,255,255,0.04);color:var(--muted);font-size:16px}
+      .hero-sub{padding:0 22px 18px;color:var(--muted);font-size:15px}
+      .results-section{margin-bottom:20px}
+      .web-results{display:grid;gap:14px}
+      .web-card{padding:16px;border-radius:14px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.06)}
+      .web-title{color:#fff;font-size:16px;font-weight:700;text-decoration:none}
+      .web-title:hover{color:var(--accent)}
+      .web-description{margin:8px 0 0;color:var(--muted);font-size:14px;line-height:1.5}
+      .video-heading{margin:24px 0 10px;color:#fff}
       .layout{display:flex;gap:20px;padding:18px}
       .sidebar{width:220px;padding:12px}
       .side-item{padding:10px;border-radius:8px;color:var(--muted);margin-bottom:8px}
@@ -30,7 +41,7 @@
       .hero h1{margin:0;font-size:22px;color:#fff}
       .hero p{margin:6px 0 0;color:var(--muted)}
       .hero .cta{display:flex;gap:10px}
-      .cta .btn-primary{background:linear-gradient(90deg,var(--brand),var(--accent));color:#fff;padding:8px 12px;border-radius:10px;border:0;cursor:pointer}
+      .btn-primary, .cta .btn-primary{background:linear-gradient(90deg,var(--brand),var(--accent));color:#fff;padding:10px 14px;border-radius:10px;border:0;cursor:pointer}
       .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
       .video-card{background:linear-gradient(180deg, rgba(255,125,57,0.06), rgba(255,120,53,0.04));cursor:pointer;border-radius:12px;overflow:hidden;position:relative;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease}
       .video-card:focus{outline:3px solid rgba(255,106,0,0.35);transform:translateY(-6px);box-shadow:0 10px 30px rgba(37,11,9,0.65)}
@@ -89,54 +100,100 @@
       const $$ = sel => Array.from(document.querySelectorAll(sel))
 
       let searchTerm = ''
+      let currentPage = 'home'
 
-      // Render app
+      const webResults = [
+        {title:'Yutoob Search Engine', url:'#', description:'A warm, red-orange search engine experience that integrates Yutoob video discovery.'},
+        {title:'Yutoob Videos', url:'#', description:'Find local Yutoob videos, watch them instantly, and get personalized recommendations.'},
+        {title:'Yutoob Browser', url:'#', description:'A search browser home page with an integrated video playground.'}
+      ]
+
+      function executeSearch(){
+        currentPage = 'results'
+        render()
+      }
+
       function render(){
         const root = document.getElementById('app')
         root.innerHTML = ''
 
         const topbar = document.createElement('header')
         topbar.className='topbar'
-        topbar.innerHTML = `<a class="skip" href="#main-content">Skip to content</a><div class="logo">Yutoob</div><input class="search" placeholder="Search" aria-label="Search videos">`
+        topbar.innerHTML = `<a class="skip" href="#main-content">Skip to content</a><div class="logo">Yutoob Search</div><div class="search-row"><input class="search" placeholder="Search the web" aria-label="Search the web"></div><button class="btn-primary" id="search-button">Search</button>`
 
         const layout = document.createElement('div'); layout.className='layout'
-        const sidebar = document.createElement('aside'); sidebar.className='sidebar'; sidebar.setAttribute('role','navigation'); sidebar.innerHTML='<div class="side-item active">Home</div><div class="side-item">Trending</div><div class="side-item">Subscriptions</div>'
+        const sidebar = document.createElement('aside'); sidebar.className='sidebar'; sidebar.setAttribute('role','navigation'); sidebar.innerHTML='<div class="side-item active">All</div><div class="side-item">Videos</div><div class="side-item">Yutoob</div>'
         const main = document.createElement('main'); main.className='main'; main.id='main-content'; main.setAttribute('role','main');
-        main.innerHTML = '<h2>Recommended</h2>'
 
-        const hero = document.createElement('section'); hero.className='hero'; hero.innerHTML = `<div><h1>Discover videos you'll love</h1><p>Personalized picks based on what you watch and like.</p></div><div class="cta"><button class="btn-primary" onclick="document.querySelector('.search').focus()">Try Search</button></div>`
-        main.appendChild(hero)
+        const hero = document.createElement('section'); hero.className='hero'
+        if(currentPage === 'home'){
+          hero.innerHTML = `<div><h1>Search the web with Yutoob</h1><p>Video search, local playback, and a friendly browsing experience all in one place.</p></div><div class="hero-search"><input class="hero-input" type="search" placeholder="Search anything" value="${searchTerm}" aria-label="Search" /><button class="btn-primary" id="hero-search">Search</button></div>`
+          main.appendChild(hero)
+          const prompt = document.createElement('div')
+          prompt.className = 'hero-sub'
+          prompt.innerHTML = '<p>Use the search bar above to find Yutoob videos and results.</p>'
+          main.appendChild(prompt)
+        } else {
+          hero.innerHTML = `<div><h1>Search results for "${searchTerm}"</h1><p>Showing web results and Yutoob video recommendations.</p></div>`
+          main.appendChild(hero)
+        }
 
-        const grid = document.createElement('div'); grid.className='grid'
+        if(currentPage === 'results'){
+          const resultsSection = document.createElement('section'); resultsSection.className = 'results-section'
+          const webList = document.createElement('div'); webList.className='web-results'
+          webResults.forEach(item => {
+            const card = document.createElement('div'); card.className='web-card'
+            card.innerHTML = `<a class="web-title" href="${item.url}">${item.title}</a><p class="web-description">${item.description}</p>`
+            webList.appendChild(card)
+          })
+          resultsSection.appendChild(webList)
 
-        const list = recommend(videos).filter(v => v.title.toLowerCase().includes((searchTerm||'').toLowerCase()))
-        const searchEl = topbar.querySelector('.search')
-        searchEl.value = searchTerm
-        searchEl.addEventListener('input', e => { searchTerm = e.target.value; render() })
-        list.forEach(v=>{
-          const s = stats[v.id] || {watchTime:0,liked:false}
-          const watched = Math.floor((s.watchTime||0)/60)
-          const badgeText = s.liked ? '♥' : (s.watchTime > 120 ? '🔥' : (watched ? watched + 'm' : 'New'))
-          const card = document.createElement('div'); card.className='video-card'
-          card.tabIndex = 0
-          card.setAttribute('role','button')
-          card.setAttribute('aria-label', `Open video ${v.title}`)
-          const poster = v.poster || 'https://via.placeholder.com/320x180?text=Video'
-          card.innerHTML = `<div class="thumb"><img src="${poster}" alt="${v.title}"><div class="score-badge">${badgeText}</div><button class="like-btn" aria-label="${s.liked ? 'Unlike' : 'Like'}">${s.liked ? '♥' : '♡'}</button></div><div class="meta"><div class="title">${v.title}</div><div class="channel">Yutoob Channel • ${watched} min</div></div>`
-          // click to open
-          card.addEventListener('click',()=>openPlayer(v))
-          card.addEventListener('keydown',e=>{ if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openPlayer(v) } })
-          // like button
-          const likeBtn = card.querySelector('.like-btn')
-          likeBtn.addEventListener('click',e=>{ e.stopPropagation(); toggleLike(v.id); likeBtn.setAttribute('aria-label', (stats[v.id] && stats[v.id].liked) ? 'Unlike' : 'Like') })
-          grid.appendChild(card)
-        })
+          const videoHeading = document.createElement('div'); videoHeading.className='video-heading'; videoHeading.innerHTML = '<h2>Yutoob video results</h2>'
+          main.appendChild(resultsSection)
+          main.appendChild(videoHeading)
 
-        main.appendChild(grid)
+          const grid = document.createElement('div'); grid.className='grid'
+          const list = recommend(videos).filter(v => v.title.toLowerCase().includes(searchTerm.toLowerCase()))
+          list.forEach(v=>{
+            const s = stats[v.id] || {watchTime:0,liked:false}
+            const watched = Math.floor((s.watchTime||0)/60)
+            const badgeText = s.liked ? '♥' : (s.watchTime > 120 ? '🔥' : (watched ? watched + 'm' : 'New'))
+            const card = document.createElement('div'); card.className='video-card'
+            card.tabIndex = 0
+            card.setAttribute('role','button')
+            card.setAttribute('aria-label', `Open video ${v.title}`)
+            const poster = v.poster || 'https://via.placeholder.com/320x180?text=Video'
+            card.innerHTML = `<div class="thumb"><img src="${poster}" alt="${v.title}"><div class="score-badge">${badgeText}</div><button class="like-btn" aria-label="${s.liked ? 'Unlike' : 'Like'}">${s.liked ? '♥' : '♡'}</button></div><div class="meta"><div class="title">${v.title}</div><div class="channel">Yutoob Channel • ${watched} min</div></div>`
+            card.addEventListener('click',()=>openPlayer(v))
+            card.addEventListener('keydown',e=>{ if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openPlayer(v) } })
+            const likeBtn = card.querySelector('.like-btn')
+            likeBtn.addEventListener('click',e=>{ e.stopPropagation(); toggleLike(v.id); likeBtn.setAttribute('aria-label', (stats[v.id] && stats[v.id].liked) ? 'Unlike' : 'Like') })
+            grid.appendChild(card)
+          })
+          main.appendChild(grid)
+        }
+
         layout.appendChild(sidebar)
         layout.appendChild(main)
         root.appendChild(topbar)
         root.appendChild(layout)
+
+        const searchEl = topbar.querySelector('.search')
+        const heroInput = main.querySelector('.hero-input')
+        const searchButton = topbar.querySelector('#search-button')
+        const heroButton = main.querySelector('#hero-search')
+
+        function attachSearch(el){
+          if(!el) return
+          el.value = searchTerm
+          el.addEventListener('input', e => { searchTerm = e.target.value })
+          el.addEventListener('keydown', e => { if(e.key === 'Enter'){ executeSearch() } })
+        }
+        attachSearch(searchEl)
+        attachSearch(heroInput)
+
+        if(searchButton) searchButton.addEventListener('click', executeSearch)
+        if(heroButton) heroButton.addEventListener('click', executeSearch)
 
         renderDebug()
       }
