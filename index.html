@@ -5,31 +5,52 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Yutoob — Single File</title>
     <style>
-      :root{--bg:#f9f9f9;--surface:#fff;--muted:#606060;--accent:#ff0000}
-      *{box-sizing:border-box}body{margin:0;font-family:Inter,Roboto,Arial,sans-serif;background:var(--bg);color:#111}
-      .topbar{height:56px;display:flex;align-items:center;padding:0 16px;background:var(--surface);border-bottom:1px solid #e6e6e6}
-      .logo{font-weight:700;color:var(--accent);font-size:20px;margin-right:16px}
-      .search{flex:1;max-width:600px;padding:8px 12px;border-radius:2px;border:1px solid #ddd}
-      .layout{display:flex}
+      :root{
+        --bg:#0f1724;
+        --surface:#0b1220;
+        --muted:#9aa6bd;
+        --accent:#ff3b30;
+        --brand:#6c5ce7;
+        --card:#0f1728;
+        --glass: rgba(255,255,255,0.04);
+      }
+      *{box-sizing:border-box}
+      body{margin:0;background:linear-gradient(180deg,#071028 0%,#071021 40%,#081226 100%);color:#e6eef8;font-family:Inter,Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+      a.skip{position:absolute;left:-999px;top:auto;width:1px;height:1px;overflow:hidden}
+      a.skip:focus{left:12px;top:12px;background:#fff;color:#000;padding:8px 12px;border-radius:6px;text-decoration:none}
+      .topbar{height:64px;display:flex;align-items:center;padding:0 20px;background:transparent;border-bottom:1px solid rgba(255,255,255,0.04)}
+      .logo{font-weight:800;color:var(--brand);font-size:22px;margin-right:18px;letter-spacing:0.6px}
+      .search{flex:1;max-width:680px;padding:10px 14px;border-radius:10px;border:1px solid rgba(255,255,255,0.06);background:rgba(255,255,255,0.02);color:var(--muted)}
+      .layout{display:flex;gap:20px;padding:18px}
       .sidebar{width:220px;padding:12px}
-      .side-item{padding:8px;border-radius:4px;color:var(--muted)}
-      .side-item.active{background:#eee;color:#000}
-      .main{flex:1;padding:16px}
-      .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
-      .video-card{background:var(--surface);cursor:pointer;border-radius:6px;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,0.05);position:relative}
+      .side-item{padding:10px;border-radius:8px;color:var(--muted);margin-bottom:8px}
+      .side-item.active{background:rgba(255,255,255,0.03);color:#fff}
+      .main{flex:1}
+      .hero{display:flex;align-items:center;justify-content:space-between;padding:22px;border-radius:12px;background:linear-gradient(90deg, rgba(108,92,231,0.15), rgba(255,59,48,0.1));margin-bottom:18px}
+      .hero h1{margin:0;font-size:22px;color:#fff}
+      .hero p{margin:6px 0 0;color:var(--muted)}
+      .hero .cta{display:flex;gap:10px}
+      .cta .btn-primary{background:linear-gradient(90deg,var(--brand),var(--accent));color:#fff;padding:8px 12px;border-radius:10px;border:0;cursor:pointer}
+      .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
+      .video-card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));cursor:pointer;border-radius:12px;overflow:hidden;position:relative;transition:transform .18s ease,box-shadow .18s ease}
+      .video-card:focus{outline:3px solid rgba(108,92,231,0.28);transform:translateY(-6px);box-shadow:0 10px 30px rgba(2,6,23,0.6)}
+      .video-card:hover{transform:translateY(-6px);box-shadow:0 8px 24px rgba(2,6,23,0.6)}
       .thumb{position:relative}
-      .thumb img{width:100%;height:140px;object-fit:cover;background:#000}
-      .like-btn{position:absolute;right:8px;top:8px;background:rgba(255,255,255,0.95);border:0;padding:6px;border-radius:6px;cursor:pointer}
-      .meta{padding:8px}
-      .title{font-size:14px;font-weight:600}
-      .channel{font-size:12px;color:var(--muted);margin-top:4px}
-      .modal{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;padding:24px}
-      .player{width:800px;max-width:100%;background:var(--surface);border-radius:6px;overflow:hidden}
-      .player video{width:100%;height:450px;background:#000}
-      .player-title{padding:12px;font-weight:600}
-      @media (max-width:800px){.sidebar{display:none}.player video{height:240px}}
-      .btn{padding:6px 10px;border-radius:6px;border:0;background:#eee;cursor:pointer}
-      .stats-debug{position:fixed;right:12px;bottom:12px;background:#fff;padding:8px;border-radius:6px;border:1px solid #eee;max-width:320px;max-height:300px;overflow:auto;font-size:12px}
+      .thumb img{width:100%;height:150px;object-fit:cover;background:#000;display:block}
+      .thumb::after{content:'';position:absolute;left:0;right:0;bottom:0;height:48px;background:linear-gradient(180deg,transparent,rgba(0,0,0,0.4));}
+      .score-badge{position:absolute;left:8px;top:8px;background:linear-gradient(90deg,var(--brand),var(--accent));color:#fff;padding:6px 8px;border-radius:999px;font-size:12px;font-weight:700}
+      .like-btn{position:absolute;right:8px;top:8px;background:rgba(255,255,255,0.06);border:0;padding:6px;border-radius:8px;cursor:pointer;color:#fff}
+      .meta{padding:12px}
+      .title{font-size:15px;font-weight:700;color:#fff}
+      .channel{font-size:13px;color:var(--muted);margin-top:6px}
+      .modal{position:fixed;inset:0;background:linear-gradient(180deg,rgba(2,6,23,0.6),rgba(2,6,23,0.9));display:flex;align-items:center;justify-content:center;padding:24px}
+      .player{width:900px;max-width:100%;background:linear-gradient(180deg,#071430,#051026);border-radius:12px;overflow:hidden;border:1px solid rgba(255,255,255,0.04)}
+      .player video{width:100%;height:520px;background:#000;display:block}
+      .player-title{padding:12px;font-weight:700;color:#fff}
+      @media (max-width:900px){.sidebar{display:none}.player video{height:260px}}
+      .btn{padding:8px 12px;border-radius:8px;border:0;background:rgba(255,255,255,0.04);cursor:pointer;color:#fff}
+      .btn:focus{outline:3px solid rgba(255,255,255,0.06)}
+      .stats-debug{position:fixed;right:12px;bottom:12px;background:rgba(10,14,22,0.9);padding:10px;border-radius:8px;border:1px solid rgba(255,255,255,0.03);max-width:360px;max-height:320px;overflow:auto;font-size:12px;color:var(--muted)}
     </style>
   </head>
   <body>
@@ -74,23 +95,35 @@
 
         const topbar = document.createElement('header')
         topbar.className='topbar'
-        topbar.innerHTML = `<div class="logo">Yutoob</div><input class="search" placeholder="Search">`
+        topbar.innerHTML = `<a class="skip" href="#main-content">Skip to content</a><div class="logo">Yutoob</div><input class="search" placeholder="Search" aria-label="Search videos">`
 
         const layout = document.createElement('div'); layout.className='layout'
-        const sidebar = document.createElement('aside'); sidebar.className='sidebar'; sidebar.innerHTML='<div class="side-item active">Home</div><div class="side-item">Trending</div><div class="side-item">Subscriptions</div>'
-        const main = document.createElement('main'); main.className='main'
+        const sidebar = document.createElement('aside'); sidebar.className='sidebar'; sidebar.setAttribute('role','navigation'); sidebar.innerHTML='<div class="side-item active">Home</div><div class="side-item">Trending</div><div class="side-item">Subscriptions</div>'
+        const main = document.createElement('main'); main.className='main'; main.id='main-content'; main.setAttribute('role','main');
         main.innerHTML = '<h2>Recommended</h2>'
+
+        const hero = document.createElement('section'); hero.className='hero'; hero.innerHTML = `<div><h1>Discover videos you'll love</h1><p>Personalized picks based on what you watch and like.</p></div><div class="cta"><button class="btn-primary" onclick="document.querySelector('.search').focus()">Try Search</button></div>`
+        main.appendChild(hero)
+
         const grid = document.createElement('div'); grid.className='grid'
 
         const list = recommend(videos)
         list.forEach(v=>{
+          const s = stats[v.id] || {watchTime:0,liked:false}
+          const watched = Math.floor((s.watchTime||0)/60)
+          const badgeText = s.liked ? '♥' : (s.watchTime > 120 ? '🔥' : (watched ? watched + 'm' : 'New'))
           const card = document.createElement('div'); card.className='video-card'
+          card.tabIndex = 0
+          card.setAttribute('role','button')
+          card.setAttribute('aria-label', `Open video ${v.title}`)
           const poster = v.poster || 'https://via.placeholder.com/320x180?text=Video'
-          card.innerHTML = `<div class="thumb"><img src="${poster}" alt="${v.title}"><button class="like-btn">${(stats[v.id] && stats[v.id].liked)?'♥':'♡'}</button></div><div class="meta"><div class="title">${v.title}</div><div class="channel">Yutoob Channel • ${Math.floor(((stats[v.id]&&stats[v.id].watchTime)||0)/60)} min</div></div>`
+          card.innerHTML = `<div class="thumb"><img src="${poster}" alt="${v.title}"><div class="score-badge">${badgeText}</div><button class="like-btn" aria-label="${s.liked ? 'Unlike' : 'Like'}">${s.liked ? '♥' : '♡'}</button></div><div class="meta"><div class="title">${v.title}</div><div class="channel">Yutoob Channel • ${watched} min</div></div>`
           // click to open
           card.addEventListener('click',()=>openPlayer(v))
+          card.addEventListener('keydown',e=>{ if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openPlayer(v) } })
           // like button
-          card.querySelector('.like-btn').addEventListener('click',e=>{ e.stopPropagation(); toggleLike(v.id) })
+          const likeBtn = card.querySelector('.like-btn')
+          likeBtn.addEventListener('click',e=>{ e.stopPropagation(); toggleLike(v.id); likeBtn.setAttribute('aria-label', (stats[v.id] && stats[v.id].liked) ? 'Unlike' : 'Like') })
           grid.appendChild(card)
         })
 
