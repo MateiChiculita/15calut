@@ -3,10 +3,177 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Yutoob</title>
+    <title>Yutoob — Single File</title>
+    <style>
+      :root{--bg:#f9f9f9;--surface:#fff;--muted:#606060;--accent:#ff0000}
+      *{box-sizing:border-box}body{margin:0;font-family:Inter,Roboto,Arial,sans-serif;background:var(--bg);color:#111}
+      .topbar{height:56px;display:flex;align-items:center;padding:0 16px;background:var(--surface);border-bottom:1px solid #e6e6e6}
+      .logo{font-weight:700;color:var(--accent);font-size:20px;margin-right:16px}
+      .search{flex:1;max-width:600px;padding:8px 12px;border-radius:2px;border:1px solid #ddd}
+      .layout{display:flex}
+      .sidebar{width:220px;padding:12px}
+      .side-item{padding:8px;border-radius:4px;color:var(--muted)}
+      .side-item.active{background:#eee;color:#000}
+      .main{flex:1;padding:16px}
+      .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px}
+      .video-card{background:var(--surface);cursor:pointer;border-radius:6px;overflow:hidden;box-shadow:0 1px 0 rgba(0,0,0,0.05);position:relative}
+      .thumb{position:relative}
+      .thumb img{width:100%;height:140px;object-fit:cover;background:#000}
+      .like-btn{position:absolute;right:8px;top:8px;background:rgba(255,255,255,0.95);border:0;padding:6px;border-radius:6px;cursor:pointer}
+      .meta{padding:8px}
+      .title{font-size:14px;font-weight:600}
+      .channel{font-size:12px;color:var(--muted);margin-top:4px}
+      .modal{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:flex;align-items:center;justify-content:center;padding:24px}
+      .player{width:800px;max-width:100%;background:var(--surface);border-radius:6px;overflow:hidden}
+      .player video{width:100%;height:450px;background:#000}
+      .player-title{padding:12px;font-weight:600}
+      @media (max-width:800px){.sidebar{display:none}.player video{height:240px}}
+      .btn{padding:6px 10px;border-radius:6px;border:0;background:#eee;cursor:pointer}
+      .stats-debug{position:fixed;right:12px;bottom:12px;background:#fff;padding:8px;border-radius:6px;border:1px solid #eee;max-width:320px;max-height:300px;overflow:auto;font-size:12px}
+    </style>
   </head>
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <div id="app"></div>
+
+    <script>
+    (function(){
+      // Sample videos
+      const videos = [
+        {id:1,title:'Big Buck Bunny',src:'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',poster:'https://peach.blender.org/wp-content/uploads/title_anouncement.jpg?x11217'},
+        {id:2,title:'Elephants Dream',src:'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4',poster:'https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/ElephantsDream.png/640px-ElephantsDream.png'},
+        {id:3,title:'For Bigger Blazes',src:'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',poster:''},
+        {id:4,title:'Sintel Trailer',src:'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/Sintel.mp4',poster:'https://durian.blender.org/wp-content/uploads/2010/05/sintel_post.jpg'},
+        {id:5,title:'Tears of Steel',src:'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/TearsOfSteel.mp4',poster:''},
+        {id:6,title:'For Bigger Escape',src:'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',poster:''},
+        {id:7,title:'Subaru Outback',src:'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/SubaruOutbackOnStreetAndDirt.mp4',poster:''},
+        {id:8,title:'Volkswagen GTI Review',src:'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/VolkswagenGTIReview.mp4',poster:''}
+      ]
+
+      const STORAGE_KEY = 'yutoob_stats'
+      let stats = {}
+      try{ stats = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}') }catch(e){ stats = {} }
+
+      function saveStats(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(stats)) }
+
+      function recommend(list){
+        return list.slice().map(v=>{
+          const s = stats[v.id] || {watchTime:0,liked:false}
+          const score = (s.watchTime||0) + (s.liked?600:0)
+          return Object.assign({},v,{score})
+        }).sort((a,b)=>b.score-a.score)
+      }
+
+      // DOM helpers
+      const $ = sel => document.querySelector(sel)
+      const $$ = sel => Array.from(document.querySelectorAll(sel))
+
+      // Render app
+      function render(){
+        const root = document.getElementById('app')
+        root.innerHTML = ''
+
+        const topbar = document.createElement('header')
+        topbar.className='topbar'
+        topbar.innerHTML = `<div class="logo">Yutoob</div><input class="search" placeholder="Search">`
+
+        const layout = document.createElement('div'); layout.className='layout'
+        const sidebar = document.createElement('aside'); sidebar.className='sidebar'; sidebar.innerHTML='<div class="side-item active">Home</div><div class="side-item">Trending</div><div class="side-item">Subscriptions</div>'
+        const main = document.createElement('main'); main.className='main'
+        main.innerHTML = '<h2>Recommended</h2>'
+        const grid = document.createElement('div'); grid.className='grid'
+
+        const list = recommend(videos)
+        list.forEach(v=>{
+          const card = document.createElement('div'); card.className='video-card'
+          const poster = v.poster || 'https://via.placeholder.com/320x180?text=Video'
+          card.innerHTML = `<div class="thumb"><img src="${poster}" alt="${v.title}"><button class="like-btn">${(stats[v.id] && stats[v.id].liked)?'♥':'♡'}</button></div><div class="meta"><div class="title">${v.title}</div><div class="channel">Yutoob Channel • ${Math.floor(((stats[v.id]&&stats[v.id].watchTime)||0)/60)} min</div></div>`
+          // click to open
+          card.addEventListener('click',()=>openPlayer(v))
+          // like button
+          card.querySelector('.like-btn').addEventListener('click',e=>{ e.stopPropagation(); toggleLike(v.id) })
+          grid.appendChild(card)
+        })
+
+        main.appendChild(grid)
+        layout.appendChild(sidebar)
+        layout.appendChild(main)
+        root.appendChild(topbar)
+        root.appendChild(layout)
+
+        renderDebug()
+      }
+
+      // Player
+      let current = null
+      let playStart = null
+
+      function openPlayer(v){
+        current = v
+        const modal = document.createElement('div'); modal.className='modal'
+        const player = document.createElement('div'); player.className='player'
+        player.innerHTML = `<video controls autoplay src="${v.src}" poster="${v.poster||''}"></video><div class="player-title">${v.title}</div><div style="padding:0 12px 12px"><button id="player-like" class="btn">${(stats[v.id]&&stats[v.id].liked)?'Unlike':'Like'}</button></div>`
+        modal.appendChild(player)
+        modal.addEventListener('click',closePlayer)
+        player.addEventListener('click',e=>e.stopPropagation())
+        document.body.appendChild(modal)
+
+        const videoEl = player.querySelector('video')
+        videoEl.addEventListener('play',()=>{
+          playStart = Date.now()
+        })
+        function addDelta(){
+          if(!playStart) return
+          const delta = Math.floor((Date.now()-playStart)/1000)
+          playStart = null
+          stats[v.id] = stats[v.id] || {watchTime:0,liked:false}
+          stats[v.id].watchTime = (stats[v.id].watchTime||0) + delta
+          saveStats()
+          render()
+        }
+        videoEl.addEventListener('pause', addDelta)
+        videoEl.addEventListener('ended', addDelta)
+
+        const likeBtn = player.querySelector('#player-like')
+        likeBtn.addEventListener('click',()=>{ toggleLike(v.id); likeBtn.textContent = (stats[v.id]&&stats[v.id].liked)?'Unlike':'Like' })
+      }
+
+      function closePlayer(){
+        // if video playing, add delta
+        if(playStart && current){
+          const delta = Math.floor((Date.now()-playStart)/1000)
+          stats[current.id] = stats[current.id] || {watchTime:0,liked:false}
+          stats[current.id].watchTime = (stats[current.id].watchTime||0) + delta
+          playStart = null
+        }
+        const modal = document.querySelector('.modal')
+        if(modal) modal.remove()
+        current = null
+        saveStats()
+        render()
+      }
+
+      function toggleLike(id){
+        stats[id] = stats[id] || {watchTime:0,liked:false}
+        stats[id].liked = !stats[id].liked
+        saveStats()
+        render()
+      }
+
+      // Debug view (optional)
+      function renderDebug(){
+        let dbg = document.querySelector('.stats-debug')
+        if(!dbg){ dbg = document.createElement('div'); dbg.className='stats-debug'; document.body.appendChild(dbg) }
+        dbg.innerHTML = '<strong>Stats (localStorage)</strong><br/>' + Object.keys(stats).map(k=>{
+          const s = stats[k]; return `#${k}: ${s.watchTime || 0}s ${s.liked? '♥':' '}`
+        }).join('<br/>')
+      }
+
+      // initial render
+      render()
+
+      // expose for console debugging
+      window.__YUTOOB = { videos, stats, recommend }
+    })()
+    </script>
   </body>
 </html>
