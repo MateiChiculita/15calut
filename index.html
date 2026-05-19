@@ -143,14 +143,19 @@
       function openPlayer(v){
         current = v
         const modal = document.createElement('div'); modal.className='modal'
+        modal.tabIndex = -1
+        modal.setAttribute('role','dialog')
+        modal.setAttribute('aria-modal','true')
         const player = document.createElement('div'); player.className='player'
-        player.innerHTML = `<video controls autoplay src="${v.src}" poster="${v.poster||''}"></video><div class="player-title">${v.title}</div><div style="padding:0 12px 12px"><button id="player-like" class="btn">${(stats[v.id]&&stats[v.id].liked)?'Unlike':'Like'}</button></div>`
+        player.innerHTML = `<video controls autoplay src="${v.src}" poster="${v.poster||''}"></video><div class="player-title">${v.title}</div><div style="padding:0 12px 12px"><button id="player-like" class="btn" aria-label="${(stats[v.id]&&stats[v.id].liked)?'Unlike':'Like'}">${(stats[v.id]&&stats[v.id].liked)?'Unlike':'Like'}</button></div>`
         modal.appendChild(player)
         modal.addEventListener('click',closePlayer)
         player.addEventListener('click',e=>e.stopPropagation())
         document.body.appendChild(modal)
+        modal.focus()
 
         const videoEl = player.querySelector('video')
+        videoEl.setAttribute('aria-label', v.title)
         videoEl.addEventListener('play',()=>{
           playStart = Date.now()
         })
@@ -168,6 +173,8 @@
 
         const likeBtn = player.querySelector('#player-like')
         likeBtn.addEventListener('click',()=>{ toggleLike(v.id); likeBtn.textContent = (stats[v.id]&&stats[v.id].liked)?'Unlike':'Like' })
+
+        modal.addEventListener('keydown', e => { if(e.key === 'Escape') closePlayer() })
       }
 
       function closePlayer(){
