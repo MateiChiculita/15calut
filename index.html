@@ -6,22 +6,22 @@
     <title>Yutoob — Single File</title>
     <style>
       :root{
-        --bg:#070914;
-        --surface:rgba(10,16,32,0.92);
-        --surface-strong:#121b33;
-        --muted:#9db2ff;
-        --accent:#4b9dff;
-        --accent2:#ff65d3;
-        --glow:rgba(75,157,255,0.22);
+        --bg:#120805;
+        --surface:rgba(32,12,6,0.92);
+        --surface-strong:#361d10;
+        --muted:#f0c8a1;
+        --accent:#ff8f2e;
+        --accent2:#ff6020;
+        --glow:rgba(255,142,64,0.22);
         --glass: rgba(255,255,255,0.06);
-        --text:#eef2ff;
+        --text:#fff0e3;
       }
       *{box-sizing:border-box}
-      body{margin:0;background:radial-gradient(circle at top, rgba(75,157,255,0.18), transparent 25%),linear-gradient(180deg,#020511 0%,#070914 55%,#020510 100%);color:var(--text);font-family:Inter,Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}
+      body{margin:0;background:radial-gradient(circle at top, rgba(255,142,64,0.14), transparent 25%),linear-gradient(180deg,#150902 0%,#120805 55%,#090401 100%);color:var(--text);font-family:Inter,Roboto,Arial,sans-serif;-webkit-font-smoothing:antialiased}
       a.skip{position:absolute;left:-999px;top:auto;width:1px;height:1px;overflow:hidden}
       a.skip:focus{left:12px;top:12px;background:#fff;color:#000;padding:8px 12px;border-radius:6px;text-decoration:none}
-      .topbar{height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;background:rgba(5,10,24,0.84);border-bottom:1px solid rgba(255,255,255,0.06);backdrop-filter:blur(12px)}
-      .logo{font-weight:900;color:#88b7ff;font-size:22px;margin-right:18px;letter-spacing:0.8px;text-transform:uppercase}
+      .topbar{height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;background:rgba(20,10,6,0.84);border-bottom:1px solid rgba(255,142,64,0.16);backdrop-filter:blur(12px)}
+      .logo{font-weight:900;color:var(--accent);font-size:22px;margin-right:18px;letter-spacing:0.8px;text-transform:uppercase}
       .search-row{flex:1;display:flex;align-items:center;max-width:720px;margin:0 16px}
       .search{width:100%;padding:12px 16px;border-radius:14px;border:1px solid rgba(255,255,255,0.09);background:rgba(255,255,255,0.05);color:var(--text)}
       .hero-search{display:flex;gap:12px;flex-wrap:wrap;align-items:center;max-width:720px;margin-top:16px}
@@ -29,55 +29,56 @@
       .hero-sub{padding:0 22px 18px;color:var(--muted);font-size:15px}
       .results-section{margin-bottom:20px}
       .web-results{display:grid;gap:14px}
-      .web-card{padding:18px;border-radius:18px;background:rgba(18,26,48,0.9);border:1px solid rgba(75,157,255,0.12);box-shadow:0 10px 40px rgba(75,157,255,0.04)}
-      .web-title{color:#eef2ff;font-size:16px;font-weight:700;text-decoration:none}
+      .web-card{padding:18px;border-radius:18px;background:rgba(40,18,8,0.9);border:1px solid rgba(255,142,64,0.18);box-shadow:0 10px 40px rgba(255,142,64,0.08)}
+      .web-title{color:#fff0e3;font-size:16px;font-weight:700;text-decoration:none}
       .web-title:hover{color:var(--accent)}
       .web-description{margin:8px 0 0;color:var(--muted);font-size:14px;line-height:1.6}
       .video-heading{margin:24px 0 10px;color:#f4f7ff}
       .layout{display:flex;gap:20px;padding:18px}
       .sidebar{width:220px;padding:18px;background:rgba(8,15,32,0.95);border-radius:24px;border:1px solid rgba(255,255,255,0.05);box-shadow:0 20px 80px rgba(16,30,68,0.35)}
       .side-item{display:block;width:100%;text-align:left;padding:14px 16px;border-radius:14px;color:var(--muted);margin-bottom:10px;border:1px solid transparent;background:transparent;cursor:pointer;transition:all .2s ease}
-      .side-item:hover{background:rgba(75,157,255,0.08);color:#f4f7ff}
-      .side-item.active{background:linear-gradient(180deg,rgba(75,157,255,0.18),rgba(116,114,255,0.12));color:#fff;border-color:rgba(75,157,255,0.2);box-shadow:0 0 0 1px rgba(75,157,255,0.08)}
+      .side-item:hover{background:rgba(255,142,64,0.08);color:#fff}
+      .side-item.active{background:linear-gradient(180deg,rgba(255,142,64,0.18),rgba(255,96,32,0.12));color:#fff;border-color:rgba(255,142,64,0.2);box-shadow:0 0 0 1px rgba(255,142,64,0.08)}
       .main{flex:1}
-      .hero{display:flex;align-items:center;justify-content:space-between;padding:22px;border-radius:22px;background:linear-gradient(135deg,rgba(75,157,255,0.18),rgba(255,101,211,0.12));margin-bottom:18px;border:1px solid rgba(255,255,255,0.06);backdrop-filter:blur(12px)}
+      .hero{display:flex;align-items:center;justify-content:space-between;padding:22px;border-radius:22px;background:linear-gradient(135deg,rgba(255,142,64,0.18),rgba(255,96,32,0.12));margin-bottom:18px;border:1px solid rgba(255,142,64,0.08);backdrop-filter:blur(12px)}
       .hero h1{margin:0;font-size:26px;color:#fff}
       .hero p{margin:6px 0 0;color:var(--muted);max-width:720px}
-      .btn-primary, .cta .btn-primary{background:linear-gradient(90deg,#88b7ff,#ff65d3);color:#fff;padding:12px 18px;border-radius:14px;border:0;cursor:pointer;box-shadow:0 18px 40px rgba(136,183,255,0.18)}
+      .btn-primary, .cta .btn-primary{background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;padding:12px 18px;border-radius:14px;border:0;cursor:pointer;box-shadow:0 18px 40px rgba(255,142,64,0.18)}
       .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
-      .video-card{background:linear-gradient(180deg, rgba(68,98,194,0.14), rgba(33,46,86,0.96));cursor:pointer;border-radius:18px;overflow:hidden;position:relative;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;border:1px solid rgba(255,255,255,0.06)}
-      .video-card:focus{outline:3px solid rgba(136,183,255,0.35);transform:translateY(-6px);box-shadow:0 14px 36px rgba(22,35,67,0.45)}
+      .video-card{background:linear-gradient(180deg, rgba(120,58,16,0.14), rgba(40,18,8,0.96));cursor:pointer;border-radius:18px;overflow:hidden;position:relative;transition:transform .18s ease,box-shadow .18s ease,border-color .18s ease;border:1px solid rgba(255,255,255,0.06)}
+      .video-card:focus{outline:3px solid rgba(255,142,64,0.35);transform:translateY(-6px);box-shadow:0 14px 36px rgba(40,20,10,0.45)}
       .video-card:hover{transform:translateY(-6px);box-shadow:0 12px 30px rgba(22,35,67,0.35)}
       .thumb{position:relative}
       .thumb img{width:100%;height:150px;object-fit:cover;background:#000;display:block}
       .thumb::after{content:'';position:absolute;left:0;right:0;bottom:0;height:48px;background:linear-gradient(180deg,transparent,rgba(0,0,0,0.55));}
-      .score-badge{position:absolute;left:8px;top:8px;background:linear-gradient(90deg,#88b7ff,#ff65d3);color:#fff;padding:6px 8px;border-radius:999px;font-size:12px;font-weight:700}
-      .like-btn{position:absolute;right:8px;top:8px;background:rgba(255,255,255,0.09);border:0;padding:6px;border-radius:10px;cursor:pointer;color:#fff}
+      .score-badge{position:absolute;left:8px;top:8px;background:linear-gradient(90deg,var(--accent),var(--accent2));color:#fff;padding:6px 8px;border-radius:999px;font-size:12px;font-weight:700}
+      .like-btn{position:absolute;right:8px;top:8px;background:rgba(255,255,255,0.12);border:0;padding:6px;border-radius:10px;cursor:pointer;color:#fff}
       .meta{padding:14px}
       .title{font-size:15px;font-weight:700;color:#fff}
       .channel{font-size:13px;color:var(--muted);margin-top:6px}
       .modal{position:fixed;inset:0;background:radial-gradient(circle at center, rgba(16,28,66,0.72), rgba(2,4,16,0.96));display:flex;align-items:center;justify-content:center;padding:24px}
-      .player{width:900px;max-width:100%;background:linear-gradient(180deg,rgba(15,25,55,0.96),rgba(6,10,24,0.98));border-radius:18px;overflow:hidden;border:1px solid rgba(136,183,255,0.18)}
+      .player{width:900px;max-width:100%;background:linear-gradient(180deg,rgba(40,16,8,0.96),rgba(12,6,3,0.98));border-radius:18px;overflow:hidden;border:1px solid rgba(255,142,64,0.18)}
       .player video{width:100%;height:520px;background:#000;display:block}
       .player-title{padding:12px;font-weight:700;color:#fff}
-      .btn{padding:10px 14px;border-radius:12px;border:0;background:linear-gradient(90deg,#88b7ff,#ff65d3);cursor:pointer;color:#fff;box-shadow:0 14px 28px rgba(136,183,255,0.18)}
-      .btn:focus{outline:3px solid rgba(136,183,255,0.45)}
-      .stats-debug{position:fixed;right:12px;bottom:12px;background:rgba(6,10,18,0.9);padding:14px;border-radius:16px;border:1px solid rgba(136,183,255,0.18);max-width:360px;max-height:320px;overflow:auto;font-size:12px;color:var(--muted)}
+      .btn{padding:10px 14px;border-radius:12px;border:0;background:linear-gradient(90deg,var(--accent),var(--accent2));cursor:pointer;color:#fff;box-shadow:0 14px 28px rgba(255,142,64,0.18)}
+      .btn:focus{outline:3px solid rgba(255,142,64,0.45)}
+      .btn.active{box-shadow:0 0 0 2px rgba(255,142,64,0.4);}
+      .stats-debug{position:fixed;right:12px;bottom:12px;background:rgba(6,10,18,0.9);padding:14px;border-radius:16px;border:1px solid rgba(255,142,64,0.18);max-width:360px;max-height:320px;overflow:auto;font-size:12px;color:var(--muted)}
       .game-mode-row{display:flex;gap:14px;flex-wrap:wrap;margin:20px 0}
       .game-card-mini{flex:1;min-width:220px;padding:18px;border-radius:20px;background:rgba(12,18,40,0.95);border:1px solid rgba(255,255,255,0.08);cursor:pointer;transition:transform .18s ease,box-shadow .18s ease}
-      .game-card-mini:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(71,124,238,0.18)}
-      .game-card-mini.active{border-color:rgba(136,183,255,0.4);box-shadow:0 0 0 1px rgba(136,183,255,0.12)}
+      .game-card-mini:hover{transform:translateY(-4px);box-shadow:0 18px 40px rgba(255,142,64,0.18)}
+      .game-card-mini.active{border-color:rgba(255,142,64,0.4);box-shadow:0 0 0 1px rgba(255,142,64,0.12)}
       .game-card-mini h3{margin:0 0 8px;font-size:18px;color:#fff}
       .game-card-mini p{margin:0;color:var(--muted);font-size:14px;line-height:1.6}
-      .game-panel{padding:18px;background:rgba(12,18,40,0.88);border-radius:22px;border:1px solid rgba(75,157,255,0.12);}
+      .game-panel{padding:18px;background:rgba(12,18,40,0.88);border-radius:22px;border:1px solid rgba(255,142,64,0.12);}
       .game-info{display:flex;flex-wrap:wrap;gap:16px;align-items:center;margin-bottom:18px}
       .game-score-card{flex:1;min-width:200px;padding:18px;border-radius:18px;background:rgba(20,30,54,0.98);border:1px solid rgba(255,255,255,0.06)}
       .game-score-card strong{display:block;color:#fff;font-size:14px;margin-bottom:6px}
-      .game-score-card span{font-size:24px;font-weight:700;color:#88b7ff}
+      .game-score-card span{font-size:24px;font-weight:700;color:var(--accent)}
       .game-board {display:flex;justify-content:center;width:100%;min-height:520px}
       .game-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px}
       .game-actions button{min-width:140px}
-      .futuristic-text{color:#a8b8ff}
+      .futuristic-text{color:var(--accent)}
       .game-tips{margin-top:14px;color:var(--muted);font-size:14px;line-height:1.7}
       canvas{border-radius:22px;background:linear-gradient(180deg,rgba(20,30,56,0.96),rgba(9,14,27,0.96));box-shadow:0 22px 50px rgba(41,72,145,0.18)}
       @media (max-width:900px){.sidebar{display:none}.player video{height:260px}}    </style>
@@ -124,6 +125,19 @@
       let obbyAnimationId = null
       let tycoonIntervalId = null
       let lastRenderPage = null
+      let beatAudio = null
+
+      const beatSongs = [
+        { id:'pulsar', title:'Pulsar Beat', artist:'Future City', src:'https://assets.mixkit.co/music/preview/mixkit-electro-future-ambient-541.mp3' },
+        { id:'neon-drive', title:'Neon Drive', artist:'Skyline Pulse', src:'https://assets.mixkit.co/music/preview/mixkit-futuristic-electronic-1160.mp3' },
+        { id:'hypercore', title:'Hypercore', artist:'Pulse Grid', src:'https://assets.mixkit.co/music/preview/mixkit-futuristic-technology-563.mp3' }
+      ]
+
+      const beatDifficulties = {
+        easy: { label:'Easy', speed: 170, span: 1100, tileDensity: 1 },
+        normal: { label:'Normal', speed: 220, span: 900, tileDensity: 1.25 },
+        hard: { label:'Hard', speed: 280, span: 720, tileDensity: 1.5 }
+      }
 
       const gameState = {
         beat: {
@@ -134,11 +148,13 @@
           lastSpawn: 0,
           speed: 220,
           spawnInterval: 900,
-          running: false
+          running: false,
+          selectedSong: 'pulsar',
+          difficulty: 'normal'
         },
         tycoon: {
-          cash: 75,
-          income: 1,
+          cash: 90,
+          income: 1.4,
           level: 1,
           multiplier: 1,
           upgrades: 0,
@@ -150,7 +166,10 @@
           alive: true,
           obstacles: [],
           lastTime: 0,
-          spawnCounter: 0
+          spawnCounter: 0,
+          speed: 240,
+          boost: 0,
+          cooldown: 0
         }
       }
 
@@ -353,6 +372,7 @@
         if(tycoonIntervalId){ clearInterval(tycoonIntervalId); tycoonIntervalId = null }
         document.removeEventListener('keydown', handleBeatKeydown)
         document.removeEventListener('keydown', handleObbyKeydown)
+        if(beatAudio){ beatAudio.pause(); beatAudio = null }
       }
 
       function renderGames(){
@@ -395,14 +415,57 @@
 
       function renderBeatTiles(container){
         const state = gameState.beat
+        const song = beatSongs.find(s => s.id === state.selectedSong) || beatSongs[0]
+        const difficulty = beatDifficulties[state.difficulty]
+
         const header = document.createElement('div'); header.className = 'game-info'
-        header.innerHTML = `<div class="game-score-card"><strong>Beat Tiles</strong><span>${state.score} pts</span><p>Hit tiles in the center zone to earn Perfect+ scores.</p></div>`
+        header.innerHTML = `<div class="game-score-card"><strong>Beat Tiles</strong><span>${state.score} pts</span><p>Now playing: ${song.title} — ${song.artist}</p></div>`
         container.appendChild(header)
+
+        const controls = document.createElement('div'); controls.className='game-actions'
+        const songLabel = document.createElement('div'); songLabel.style.flex='1'
+        songLabel.innerHTML = `<strong style="display:block;margin-bottom:6px;color:#fff">Song</strong>`
+        const songSelect = document.createElement('select')
+        songSelect.style.width='100%'
+        beatSongs.forEach(s => {
+          const option = document.createElement('option')
+          option.value = s.id
+          option.textContent = `${s.title} — ${s.artist}`
+          if(s.id === state.selectedSong) option.selected = true
+          songSelect.appendChild(option)
+        })
+        songSelect.addEventListener('change', () => {
+          state.selectedSong = songSelect.value
+          updateBeatAudio()
+          render()
+        })
+        songLabel.appendChild(songSelect)
+        controls.appendChild(songLabel)
+
+        const difficultySelector = document.createElement('div'); difficultySelector.style.display='flex'; difficultySelector.style.gap='10px'; difficultySelector.style.flex='1';
+        Object.keys(beatDifficulties).forEach(key => {
+          const diff = beatDifficulties[key]
+          const btn = document.createElement('button'); btn.className='btn' + (state.difficulty === key ? ' active' : ''); btn.textContent = diff.label
+          btn.addEventListener('click', () => {
+            state.difficulty = key
+            state.speed = diff.speed
+            state.spawnInterval = diff.span
+            render()
+          })
+          difficultySelector.appendChild(btn)
+        })
+        controls.appendChild(difficultySelector)
+        container.appendChild(controls)
 
         const board = document.createElement('div'); board.className = 'game-board'
         const canvas = document.createElement('canvas'); canvas.id = 'beat-canvas'; canvas.width = 760; canvas.height = 520
         board.appendChild(canvas)
         container.appendChild(board)
+
+        if(beatAudio){ beatAudio.pause(); beatAudio = null }
+        const audioPlayer = document.createElement('audio'); audioPlayer.id='beat-audio'; audioPlayer.style.width='100%'; audioPlayer.controls = true; audioPlayer.autoplay = true; audioPlayer.loop = true; audioPlayer.src = song.src
+        container.appendChild(audioPlayer)
+        beatAudio = audioPlayer
 
         const actions = document.createElement('div'); actions.className = 'game-actions'
         const hotkeys = ['D','F','J','K']
@@ -414,15 +477,26 @@
         container.appendChild(actions)
 
         const tips = document.createElement('div'); tips.className = 'game-tips'
-        tips.innerHTML = `<p><strong class="futuristic-text">Accuracy:</strong> ${state.accuracy} · <strong class="futuristic-text">Combo:</strong> ${state.combo}</p><p>Use D / F / J / K or tap the buttons. Keep your timing close to the center for Perfect+ hits.</p>`
+        tips.innerHTML = `<p><strong class="futuristic-text">Accuracy:</strong> ${state.accuracy} · <strong class="futuristic-text">Combo:</strong> ${state.combo} · <strong class="futuristic-text">Mode:</strong> ${difficulty.label}</p><p>Use D / F / J / K or tap the buttons. Harder songs and harder modes push the timing window tighter.</p>`
         container.appendChild(tips)
 
         if(!beatAnimationId){
           state.running = true
           state.lastTime = performance.now()
           state.lastSpawn = performance.now()
+          state.speed = difficulty.speed
+          state.spawnInterval = difficulty.span
           document.addEventListener('keydown', handleBeatKeydown)
           beatAnimationId = requestAnimationFrame(beatLoop)
+        }
+      }
+
+      function updateBeatAudio(){
+        const song = beatSongs.find(s => s.id === gameState.beat.selectedSong) || beatSongs[0]
+        const audio = document.getElementById('beat-audio')
+        if(audio){
+          audio.src = song.src
+          audio.play().catch(() => {})
         }
       }
 
@@ -460,13 +534,17 @@
 
       function beatLoop(timestamp){
         const state = gameState.beat
+        const difficulty = beatDifficulties[state.difficulty]
         const dt = (timestamp - state.lastTime) / 1000
         state.lastTime = timestamp
         if(timestamp - state.lastSpawn > state.spawnInterval){
-          state.tiles.push({ lane: Math.floor(Math.random() * 4), y: -68, id: `tile-${Date.now()}-${Math.random()}` })
+          const count = Math.max(1, Math.round(difficulty.tileDensity))
+          for(let i=0;i<count;i++){
+            state.tiles.push({ lane: Math.floor(Math.random() * 4), y: -68 - i * 42, id: `tile-${Date.now()}-${Math.random()}` })
+          }
           state.lastSpawn = timestamp
         }
-        const speed = state.speed + state.score * 0.03
+        const speed = state.speed + state.score * 0.02
         state.tiles.forEach(tile => tile.y += speed * dt)
         state.tiles = state.tiles.filter(tile => {
           if(tile.y > 540){ state.accuracy = 'Miss'; state.combo = 0; return false }
@@ -486,7 +564,7 @@
         const ctx = canvas.getContext('2d')
         ctx.clearRect(0,0,canvas.width,canvas.height)
         const grad = ctx.createLinearGradient(0,0,0,canvas.height)
-        grad.addColorStop(0,'#081223'); grad.addColorStop(1,'#06101f')
+        grad.addColorStop(0,'#1b0904'); grad.addColorStop(1,'#0c0502')
         ctx.fillStyle = grad
         ctx.fillRect(0,0,canvas.width,canvas.height)
         const laneWidth = 140
@@ -494,33 +572,33 @@
         const startX = 70
         for(let i=0;i<4;i++){
           const x = startX + i * (laneWidth + gap)
-          ctx.fillStyle = 'rgba(72,112,255,0.12)'
+          ctx.fillStyle = 'rgba(255,142,64,0.12)'
           ctx.fillRect(x, 0, laneWidth, canvas.height)
-          ctx.strokeStyle = 'rgba(136,183,255,0.18)'
+          ctx.strokeStyle = 'rgba(255,142,64,0.18)'
           ctx.lineWidth = 2
           ctx.strokeRect(x, 0, laneWidth, canvas.height)
-          ctx.fillStyle = 'rgba(136,183,255,0.08)'
+          ctx.fillStyle = 'rgba(255,142,64,0.06)'
           ctx.fillRect(x, 420, laneWidth, 110)
         }
         const targetY = 460
-        ctx.strokeStyle = 'rgba(255,101,211,0.8)'
-        ctx.lineWidth = 3
+        ctx.strokeStyle = 'rgba(255,142,64,0.85)'
+        ctx.lineWidth = 4
         ctx.beginPath(); ctx.moveTo(startX, targetY); ctx.lineTo(startX + 4*(laneWidth+gap) - gap, targetY); ctx.stroke()
-        ctx.fillStyle = 'rgba(255,101,211,0.12)'
-        ctx.fillRect(startX, targetY - 28, 4*(laneWidth+gap) - gap, 56)
+        ctx.fillStyle = 'rgba(255,142,64,0.16)'
+        ctx.fillRect(startX, targetY - 34, 4*(laneWidth+gap) - gap, 68)
         gameState.beat.tiles.forEach(tile => {
           const x = startX + tile.lane * (laneWidth + gap) + 10
-          ctx.fillStyle = 'rgba(75,157,255,0.95)'
-          ctx.shadowColor = 'rgba(75,157,255,0.45)'
-          ctx.shadowBlur = 20
+          ctx.fillStyle = 'rgba(255,142,64,0.95)'
+          ctx.shadowColor = 'rgba(255,142,64,0.45)'
+          ctx.shadowBlur = 22
           ctx.fillRect(x, tile.y, laneWidth - 20, 48)
           ctx.shadowBlur = 0
         })
-        ctx.fillStyle = '#eef2ff'
+        ctx.fillStyle = '#fff1dc'
         ctx.font = '700 22px Inter'
         ctx.fillText(`Score: ${gameState.beat.score}`, 28, 42)
         ctx.fillText(`Combo: ${gameState.beat.combo}`, 28, 74)
-        ctx.fillStyle = '#9db2ff'
+        ctx.fillStyle = '#f4c99a'
         ctx.font = '600 18px Inter'
         ctx.fillText(`Hit: ${gameState.beat.accuracy}`, 28, 104)
       }
@@ -537,14 +615,20 @@
 
         const actions = document.createElement('div'); actions.className = 'game-actions'
         const buttons = [
-          { label: 'Collect Boost', action: () => { state.cash += 12; render() } },
+          { label: 'Collect Boost', action: () => { state.cash += 18; render() } },
           { label: `Buy Upgrade ($${40 + state.upgrades * 30})`, action: () => {
             const cost = 40 + state.upgrades * 30
-            if(state.cash >= cost){ state.cash -= cost; state.income += 1.2 * state.multiplier; state.upgrades += 1; state.level += 1; render() }
+            if(state.cash >= cost){ state.cash -= cost; state.income += 1.4 * state.multiplier; state.upgrades += 1; state.level += 1; render() }
           } },
-          { label: `Launch AI Hub ($${120 + state.upgrades * 20})`, action: () => {
-            const cost = 120 + state.upgrades * 20
-            if(state.cash >= cost){ state.cash -= cost; state.multiplier += 0.25; render() }
+          { label: `Launch Neon Vault ($${110 + state.upgrades * 25})`, action: () => {
+            const cost = 110 + state.upgrades * 25
+            if(state.cash >= cost){ state.cash -= cost; state.multiplier += 0.3; state.income += 2; render() }
+          } },
+          { label: `Sell Cyber Ads ($${20 + state.level * 10})`, action: () => {
+            const earn = 20 + state.level * 10
+            state.cash += earn
+            state.income += 0.15
+            render()
           } }
         ]
         buttons.forEach(btn => {
@@ -554,7 +638,7 @@
         })
         container.appendChild(actions)
         const tips = document.createElement('div'); tips.className='game-tips'
-        tips.innerHTML = '<p>Every second your income grows automatically. Invest in upgrades to unlock faster future gains.</p>'
+        tips.innerHTML = '<p>Every second your business earns credits automatically. Use boosts, vault launches, and ad sales to stay ahead of the curve.</p>'
         container.appendChild(tips)
         if(!tycoonIntervalId){ startTycoonMode() }
       }
@@ -584,12 +668,13 @@
         const actions = document.createElement('div'); actions.className='game-actions'
         const leftBtn = document.createElement('button'); leftBtn.className='btn'; leftBtn.textContent='Left'; leftBtn.addEventListener('click', () => moveObby(-1))
         const rightBtn = document.createElement('button'); rightBtn.className='btn'; rightBtn.textContent='Right'; rightBtn.addEventListener('click', () => moveObby(1))
+        const boostBtn = document.createElement('button'); boostBtn.className='btn'; boostBtn.textContent='Boost'; boostBtn.addEventListener('click', activateObbyBoost)
         const restartBtn = document.createElement('button'); restartBtn.className='btn'; restartBtn.textContent='Restart'; restartBtn.addEventListener('click', resetObby)
-        actions.append(leftBtn, rightBtn, restartBtn)
+        actions.append(leftBtn, rightBtn, boostBtn, restartBtn)
         container.appendChild(actions)
 
         const tips = document.createElement('div'); tips.className='game-tips'
-        tips.innerHTML = '<p>Keep moving to the open lane and time your dodges. Survive longer to reach higher scores.</p>'
+        tips.innerHTML = `<p>Keep moving to the open lane and time your dodges. Survive longer to reach higher scores.</p><p>Boost slows the course for a short time and recharges quickly.</p>`
         container.appendChild(tips)
 
         if(!obbyAnimationId){
@@ -603,6 +688,14 @@
       function handleObbyKeydown(event){
         if(event.key === 'ArrowLeft' || event.key.toLowerCase() === 'a'){ moveObby(-1) }
         if(event.key === 'ArrowRight' || event.key.toLowerCase() === 'd'){ moveObby(1) }
+        if(event.key.toLowerCase() === 's' || event.key === ' '){ activateObbyBoost() }
+      }
+
+      function activateObbyBoost(){
+        const state = gameState.obby
+        if(state.cooldown > 0 || !state.alive) return
+        state.boost = 0.7
+        state.cooldown = 4
       }
 
       function moveObby(direction){
@@ -622,13 +715,16 @@
         if(!state.alive){ drawObby(); obbyAnimationId = null; return }
         const dt = (timestamp - state.lastTime) / 1000
         state.lastTime = timestamp
-        state.spawnCounter += dt
-        if(state.spawnCounter > 1.2){
+        state.spawnCounter += dt * (state.score > 30 ? 1.2 : 1)
+        if(state.spawnCounter > 1.1){
           state.obstacles.push({ lane: Math.floor(Math.random() * 3), y: -60, id: `obs-${Date.now()}-${Math.random()}` })
           state.spawnCounter = 0
         }
-        state.obstacles.forEach(obs => obs.y += 240 * dt)
+        const obstacleSpeed = state.speed * (state.boost > 0 ? 0.55 : 1) + Math.min(120, state.score * 0.6)
+        state.obstacles.forEach(obs => obs.y += obstacleSpeed * dt)
         state.obstacles = state.obstacles.filter(obs => obs.y < 460)
+        if(state.boost > 0){ state.boost -= dt; }
+        if(state.cooldown > 0){ state.cooldown = Math.max(0, state.cooldown - dt) }
         const playerY = 340
         const playerLane = state.position
         state.obstacles.forEach(obs => {
@@ -636,7 +732,7 @@
             state.alive = false
           }
         })
-        if(state.alive){ state.score += dt * 5 }
+        if(state.alive){ state.score += dt * (state.boost > 0 ? 9 : 6) }
         drawObby()
         if(state.alive && currentPage === 'games' && currentGame === 'obby'){
           obbyAnimationId = requestAnimationFrame(obbyLoop)
@@ -652,38 +748,44 @@
         const width = canvas.width
         const height = canvas.height
         ctx.clearRect(0,0,width,height)
-        ctx.fillStyle = '#020818'
+        ctx.fillStyle = '#140804'
         ctx.fillRect(0,0,width,height)
         const laneWidth = 140
         const gap = 30
         const startX = 90
         for(let i=0;i<3;i++){
           const x = startX + i * (laneWidth + gap)
-          ctx.fillStyle = i === gameState.obby.position ? 'rgba(255,101,211,0.18)' : 'rgba(75,157,255,0.08)'
+          ctx.fillStyle = i === gameState.obby.position ? 'rgba(255,142,64,0.18)' : 'rgba(255,142,64,0.08)'
           ctx.fillRect(x, 0, laneWidth, height)
-          ctx.strokeStyle = 'rgba(136,183,255,0.14)'
+          ctx.strokeStyle = 'rgba(255,142,64,0.14)'
           ctx.lineWidth = 2
           ctx.strokeRect(x, 0, laneWidth, height)
         }
         gameState.obby.obstacles.forEach(obs => {
           const x = startX + obs.lane * (laneWidth + gap) + 10
-          ctx.fillStyle = 'rgba(255,101,211,0.9)'
+          ctx.fillStyle = 'rgba(255,142,64,0.95)'
+          ctx.shadowColor = 'rgba(255,142,64,0.35)'
+          ctx.shadowBlur = 18
           ctx.fillRect(x, obs.y, laneWidth - 20, 32)
+          ctx.shadowBlur = 0
         })
         const px = startX + gameState.obby.position * (laneWidth + gap) + 10
-        ctx.fillStyle = gameState.obby.alive ? 'rgba(75,157,255,0.95)' : 'rgba(255,101,211,0.95)'
+        ctx.fillStyle = gameState.obby.alive ? 'rgba(255,186,122,0.95)' : 'rgba(255,102,56,0.95)'
         ctx.fillRect(px, 340, laneWidth - 20, 44)
-        ctx.fillStyle = '#eef2ff'
+        ctx.fillStyle = '#fff1dc'
         ctx.font = '700 22px Inter'
         ctx.fillText(`Score: ${Math.floor(gameState.obby.score)}m`, 28, 38)
+        ctx.font = '600 16px Inter'
+        ctx.fillStyle = '#f4c99a'
+        ctx.fillText(`Boost: ${gameState.obby.boost > 0 ? 'Active' : gameState.obby.cooldown > 0 ? Math.ceil(gameState.obby.cooldown)+'s' : 'Ready'}`, 28, 66)
         if(!gameState.obby.alive){
           ctx.fillStyle = 'rgba(0,0,0,0.65)'
           ctx.fillRect(120, 160, 520, 120)
-          ctx.fillStyle = '#ff65d3'
+          ctx.fillStyle = 'rgba(255,102,56,0.95)'
           ctx.font = '700 32px Inter'
           ctx.fillText('Game Over', 260, 215)
           ctx.font = '500 18px Inter'
-          ctx.fillStyle = '#eef2ff'
+          ctx.fillStyle = '#fff1dc'
           ctx.fillText('Press Restart to run again', 236, 255)
         }
       }
