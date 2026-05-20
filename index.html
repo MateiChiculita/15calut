@@ -434,8 +434,8 @@
         const modes = [
           { id:'beat-tiles', title:'Beat Tiles', description:'Tap the neon track when falling tiles hit the center zone for perfect+ timing.', icon:'🎵' },
           { id:'tycoon', title:'Cyber Tycoon', description:'Build a glowing business, buy upgrades, and watch the credits flow.', icon:'💎' },
-          { id:'space-racer', title:'Space Racer', description:'Race through neon lanes, avoid cosmic obstacles and keep your ship alive.', icon:'🚀' },
-          { id:'obby', title:'Neon Obby', description:'Dodge hazards in a bright runner course and survive as long as you can.', icon:'🏃' },
+          { id:'space-racer', title:'Space Racer', description:'Tune the hyperdrive gauge and align energy pulses in a futuristic charge run.', icon:'🚀' },
+          { id:'obby', title:'Neon Obby', description:'Build a glowing route through a neon circuit with timing and logic.', icon:'🏃' },
           { id:'puzzle-grid', title:'Puzzle Grid', description:'Match the glowing tiles in a futuristic board puzzle mission.', icon:'🧩' }
         ]
         modes.forEach(mode => {
@@ -771,8 +771,9 @@
 
       function renderObbyPanel(container){
         const state = gameState.obby
+        if(!state.pattern.length){ initObbyPattern() }
         const header = document.createElement('div'); header.className = 'game-info'
-        header.innerHTML = `<div class="game-score-card"><strong>Neon Obby</strong><span>${state.score}m</span><p>Use ← / → or click the lanes to avoid glowing hazards.</p></div>`
+        header.innerHTML = `<div class="game-score-card"><strong>Neon Obby</strong><span>${state.score} pts</span><p>Build a glowing route through a neon circuit with timing and logic.</p></div>`
         container.appendChild(header)
 
         const board = document.createElement('div'); board.className='game-board obby-perspective'
@@ -783,13 +784,13 @@
         const actions = document.createElement('div'); actions.className='game-actions'
         const leftBtn = document.createElement('button'); leftBtn.className='btn'; leftBtn.textContent='Left'; leftBtn.addEventListener('click', () => moveObby(-1))
         const rightBtn = document.createElement('button'); rightBtn.className='btn'; rightBtn.textContent='Right'; rightBtn.addEventListener('click', () => moveObby(1))
-        const boostBtn = document.createElement('button'); boostBtn.className='btn'; boostBtn.textContent='Boost'; boostBtn.addEventListener('click', activateObbyBoost)
+        const placeBtn = document.createElement('button'); placeBtn.className='btn'; placeBtn.textContent='Place'; placeBtn.addEventListener('click', placeObbySegment)
         const restartBtn = document.createElement('button'); restartBtn.className='btn'; restartBtn.textContent='Restart'; restartBtn.addEventListener('click', resetObby)
-        actions.append(leftBtn, rightBtn, boostBtn, restartBtn)
+        actions.append(leftBtn, rightBtn, placeBtn, restartBtn)
         container.appendChild(actions)
 
         const tips = document.createElement('div'); tips.className='game-tips'
-        tips.innerHTML = `<p>Keep moving to the open lane and time your dodges. Survive longer to reach higher scores.</p><p>Boost slows the course for a short time and recharges quickly.</p>`
+        tips.innerHTML = `<p>Select the right lane and place energy nodes to extend the path. Complete the pattern to finish the circuit.</p><p>Wrong placements reset the route, so keep timing steady.</p>`
         container.appendChild(tips)
 
         if(!obbyAnimationId){
@@ -798,6 +799,17 @@
           document.addEventListener('keydown', handleObbyKeydown)
           obbyAnimationId = requestAnimationFrame(obbyLoop)
         }
+      }
+
+      function initObbyPattern(){
+        const state = gameState.obby
+        state.pattern = Array.from({length: 7}, () => Math.floor(Math.random() * 3))
+        state.path = []
+        state.goalIndex = 0
+        state.score = 0
+        state.alive = true
+        state.cooldown = 0
+        state.phase = 0
       }
 
       function initPuzzleGrid(){
@@ -886,12 +898,12 @@
       function renderRacerPanel(container){
         const state = gameState.spaceRacer
         const header = document.createElement('div'); header.className = 'game-info'
-        header.innerHTML = `<div class="game-score-card"><strong>Space Racer</strong><span>${Math.floor(state.distance)}m</span><p>Control the ship and avoid the glowing asteroids.</p></div>`
+        header.innerHTML = `<div class="game-score-card"><strong>Space Racer</strong><span>${Math.floor(state.score)} pts</span><p>Tune the hyperdrive gauge and align energy pulses in a futuristic charge run.</p></div>`
         container.appendChild(header)
 
         const banner = document.createElement('div'); banner.className = 'game-banner'
         banner.style.backgroundImage = "url('https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=900&q=80')"
-        banner.innerHTML = `<h3>Neon lane racing</h3><p>Use ← / → and boost to keep your ship ahead of the pulse wave.</p>`
+        banner.innerHTML = `<h3>Energy alignment challenge</h3><p>Keep the ship centered in the glowing charge band to increase power and score.</p>`
         container.appendChild(banner)
 
         const board = document.createElement('div'); board.className='game-board'
@@ -899,16 +911,20 @@
         board.appendChild(canvas)
         container.appendChild(board)
 
+        const stats = document.createElement('div'); stats.className = 'game-score-card'
+        stats.innerHTML = `<strong>Charge</strong><span>${Math.floor(state.charge)}%</span><p>Target zone is ${Math.round(state.targetSize*100)}% wide.</p>`
+        container.appendChild(stats)
+
         const actions = document.createElement('div'); actions.className='game-actions'
-        const leftBtn = document.createElement('button'); leftBtn.className='btn'; leftBtn.textContent='Left'; leftBtn.addEventListener('click', () => moveRacer(-1))
-        const rightBtn = document.createElement('button'); rightBtn.className='btn'; rightBtn.textContent='Right'; rightBtn.addEventListener('click', () => moveRacer(1))
-        const boostBtn = document.createElement('button'); boostBtn.className='btn'; boostBtn.textContent='Boost'; boostBtn.addEventListener('click', activateRacerBoost)
+        const leftBtn = document.createElement('button'); leftBtn.className='btn'; leftBtn.textContent='Shift Left'; leftBtn.addEventListener('click', () => moveRacer(-1))
+        const rightBtn = document.createElement('button'); rightBtn.className='btn'; rightBtn.textContent='Shift Right'; rightBtn.addEventListener('click', () => moveRacer(1))
+        const boostBtn = document.createElement('button'); boostBtn.className='btn'; boostBtn.textContent='Charge'; boostBtn.addEventListener('click', activateRacerBoost)
         const restartBtn = document.createElement('button'); restartBtn.className='btn'; restartBtn.textContent='Restart'; restartBtn.addEventListener('click', resetRacer)
         actions.append(leftBtn, rightBtn, boostBtn, restartBtn)
         container.appendChild(actions)
 
         const tips = document.createElement('div'); tips.className='game-tips'
-        tips.innerHTML = '<p>Stay in the clear lane. Boost slows obstacles and increases your score.</p><p>Collect distance by surviving longer.</p>'
+        tips.innerHTML = '<p>Align with the glowing band before you charge. Good timing increases score and power.</p><p>Use Shift buttons to keep the ship inside the pulse zone.</p>'
         container.appendChild(tips)
 
         if(!racerAnimationId){
@@ -926,12 +942,20 @@
       function activateRacerBoost(){
         const state = gameState.spaceRacer
         if(state.cooldown > 0) return
-        state.boost = 0.7
-        state.cooldown = 4
+        state.cooldown = 1.6
+        const alignment = Math.abs(state.position / 2 - state.targetPos)
+        if(alignment < state.targetSize / 2){
+          state.score += 18
+          state.charge = Math.min(100, state.charge + 14)
+        } else {
+          state.score = Math.max(0, state.score - 10)
+          state.charge = Math.max(0, state.charge - 12)
+        }
+        render()
       }
 
       function resetRacer(){
-        gameState.spaceRacer = { position: 1, score: 0, speed: 220, obstacles: [], lastTime: performance.now(), spawnTimer: 0, boost: 0, cooldown: 0, distance: 0 }
+        gameState.spaceRacer = { position: 1, score: 0, charge: 72, targetPos: 0.5, targetSize: 0.24, lastTime: performance.now(), phase: 0, cooldown: 0 }
         if(racerAnimationId){ cancelAnimationFrame(racerAnimationId); racerAnimationId = null }
         document.removeEventListener('keydown', handleRacerKeydown)
         render()
@@ -947,20 +971,10 @@
         const state = gameState.spaceRacer
         const dt = (timestamp - state.lastTime) / 1000
         state.lastTime = timestamp
-        state.spawnTimer += dt
-        if(state.spawnTimer > 0.95){
-          state.obstacles.push({ lane: Math.floor(Math.random() * 3), y: -80, id: `obs-${Date.now()}-${Math.random()}` })
-          state.spawnTimer = 0
-        }
-        const obstacleSpeed = state.speed * (state.boost > 0 ? 0.5 : 1) + Math.min(100, state.distance * 0.4)
-        state.obstacles.forEach(obs => obs.y += obstacleSpeed * dt)
-        state.obstacles = state.obstacles.filter(obs => obs.y < 460)
-        if(state.boost > 0){ state.boost = Math.max(0, state.boost - dt) }
+        state.phase += dt * 0.9
+        state.targetPos = 0.16 + 0.68 * (0.5 + 0.5 * Math.sin(state.phase))
+        state.charge = Math.max(0, state.charge - dt * 6)
         if(state.cooldown > 0){ state.cooldown = Math.max(0, state.cooldown - dt) }
-        state.distance += dt * (state.boost > 0 ? 14 : 10)
-        state.obstacles.forEach(obs => {
-          if(obs.lane === state.position && obs.y > 330 && obs.y < 380){ resetRacer() }
-        })
         drawRacerScene()
         if(currentPage === 'games' && currentGame === 'space-racer'){
           racerAnimationId = requestAnimationFrame(racerLoop)
@@ -976,64 +990,83 @@
         const width = canvas.width
         const height = canvas.height
         ctx.clearRect(0,0,width,height)
-        ctx.fillStyle = '#0b0f1d'
+        const bg = ctx.createLinearGradient(0,0,width,height)
+        bg.addColorStop(0,'#090d1d')
+        bg.addColorStop(1,'#04060f')
+        ctx.fillStyle = bg
         ctx.fillRect(0,0,width,height)
-        const glow = ctx.createLinearGradient(0,0,width,0)
-        glow.addColorStop(0,'rgba(255,142,64,0.12)')
-        glow.addColorStop(0.5,'rgba(255,255,255,0.15)')
-        glow.addColorStop(1,'rgba(255,142,64,0.12)')
-        ctx.fillStyle = glow
-        ctx.fillRect(0,120,width,200)
-        const laneW = width / 3
-        for(let i=1;i<3;i++){
-          ctx.strokeStyle='rgba(255,142,64,0.14)'
-          ctx.lineWidth=2
-          ctx.beginPath()
-          ctx.moveTo(i*laneW,120)
-          ctx.lineTo(i*laneW,height-40)
-          ctx.stroke()
+
+        const trackY = 96
+        ctx.fillStyle = 'rgba(255,142,64,0.08)'
+        ctx.fillRect(50, trackY, width - 100, 220)
+        for(let i = 0; i < 3; i++){
+          const x = 50 + i * (width - 100) / 3
+          ctx.fillStyle = 'rgba(255,255,255,0.05)'
+          ctx.fillRect(x + 6, trackY + 8, (width - 100) / 3 - 12, 204)
         }
-        ctx.fillStyle='rgba(255,142,64,0.08)'
-        for(let i=0;i<5;i++){
-          const y=120 + i*60
-          ctx.fillRect(0,y,width,10)
-        }
+
         const state = gameState.spaceRacer
-        const shipX = state.position*laneW + laneW/2
-        ctx.fillStyle='#ff8e40'
+        const targetX = 50 + state.targetPos * (width - 100)
+        const targetW = state.targetSize * (width - 100)
+        const gradient = ctx.createLinearGradient(targetX - targetW, 0, targetX + targetW, 0)
+        gradient.addColorStop(0,'rgba(33,255,205,0.08)')
+        gradient.addColorStop(0.5,'rgba(33,255,205,0.24)')
+        gradient.addColorStop(1,'rgba(33,255,205,0.08)')
+        ctx.fillStyle = gradient
+        ctx.fillRect(targetX - targetW / 2, trackY + 10, targetW, 200)
+
+        const shipX = 50 + state.position * (width - 100) / 3 + (width - 100) / 6
+        ctx.fillStyle = 'rgba(255,142,64,0.95)'
         ctx.beginPath()
-        ctx.moveTo(shipX,360)
-        ctx.lineTo(shipX-18,400)
-        ctx.lineTo(shipX+18,400)
-        ctx.closePath()
+        ctx.arc(shipX, trackY + 120, 28, 0, Math.PI * 2)
         ctx.fill()
-        ctx.fillStyle='rgba(255,255,255,0.9)'
+        ctx.fillStyle = '#fff'
         ctx.beginPath()
-        ctx.arc(shipX,352,10,0,Math.PI*2)
+        ctx.arc(shipX, trackY + 120, 12, 0, Math.PI * 2)
         ctx.fill()
-        state.obstacles.forEach(obs => {
-          ctx.fillStyle='rgba(255,80,61,0.92)'
-          const x = obs.lane*laneW + laneW/2
-          ctx.beginPath()
-          ctx.moveTo(x,obs.y)
-          ctx.lineTo(x-22,obs.y+40)
-          ctx.lineTo(x+22,obs.y+40)
-          ctx.closePath()
-          ctx.fill()
-        })
+
+        ctx.fillStyle = '#fff1dc'
+        ctx.font = '700 22px Inter'
+        ctx.fillText(`Score: ${Math.floor(state.score)}`, 28, 42)
+        ctx.font = '600 16px Inter'
+        ctx.fillStyle = '#f4c99a'
+        ctx.fillText(`Charge: ${Math.floor(state.charge)}%`, 28, 70)
+        ctx.fillText(`Next pulse zone`, 28, 98)
+
+        const gaugeWidth = width - 120
+        ctx.fillStyle = 'rgba(255,255,255,0.08)'
+        ctx.fillRect(60, height - 60, gaugeWidth, 18)
+        ctx.fillStyle = 'rgba(33,255,205,0.8)'
+        ctx.fillRect(60, height - 60, (state.charge / 100) * gaugeWidth, 18)
+
+        ctx.fillStyle = 'rgba(255,142,64,0.35)'
+        ctx.fillRect(60, height - 96, (state.cooldown > 0 ? (state.cooldown / 1.6) : 0) * gaugeWidth, 12)
       }
 
       function handleObbyKeydown(event){
         if(event.key === 'ArrowLeft' || event.key.toLowerCase() === 'a'){ moveObby(-1) }
         if(event.key === 'ArrowRight' || event.key.toLowerCase() === 'd'){ moveObby(1) }
-        if(event.key.toLowerCase() === 's' || event.key === ' '){ activateObbyBoost() }
+        if(event.key.toLowerCase() === 's' || event.key === ' '){ placeObbySegment() }
       }
 
-      function activateObbyBoost(){
+      function placeObbySegment(){
         const state = gameState.obby
         if(state.cooldown > 0 || !state.alive) return
-        state.boost = 0.7
-        state.cooldown = 4
+        const correct = state.position === state.pattern[state.goalIndex]
+        state.path.push({ lane: state.position, correct })
+        if(correct){
+          state.score += 14
+          state.goalIndex += 1
+          if(state.goalIndex >= state.pattern.length){
+            state.alive = false
+          }
+        } else {
+          state.score = Math.max(0, state.score - 12)
+          state.goalIndex = 0
+          state.path = []
+        }
+        state.cooldown = 0.9
+        render()
       }
 
       function moveObby(direction){
@@ -1042,7 +1075,7 @@
       }
 
       function resetObby(){
-        gameState.obby = { position: 1, score: 0, alive: true, obstacles: [], lastTime: performance.now(), spawnCounter: 0 }
+        gameState.obby = { position: 1, score: 0, alive: true, path: [], pattern: [], goalIndex: 0, lastTime: performance.now(), phase: 0, cooldown: 0 }
         if(obbyAnimationId){ cancelAnimationFrame(obbyAnimationId); obbyAnimationId=null }
         document.removeEventListener('keydown', handleObbyKeydown)
         render()
@@ -1050,29 +1083,12 @@
 
       function obbyLoop(timestamp){
         const state = gameState.obby
-        if(!state.alive){ drawObby(); obbyAnimationId = null; return }
         const dt = (timestamp - state.lastTime) / 1000
         state.lastTime = timestamp
-        state.spawnCounter += dt * (state.score > 30 ? 1.2 : 1)
-        if(state.spawnCounter > 1.1){
-          state.obstacles.push({ lane: Math.floor(Math.random() * 3), y: -60, id: `obs-${Date.now()}-${Math.random()}` })
-          state.spawnCounter = 0
-        }
-        const obstacleSpeed = state.speed * (state.boost > 0 ? 0.55 : 1) + Math.min(120, state.score * 0.6)
-        state.obstacles.forEach(obs => obs.y += obstacleSpeed * dt)
-        state.obstacles = state.obstacles.filter(obs => obs.y < 460)
-        if(state.boost > 0){ state.boost -= dt; }
+        state.phase += dt * 1.1
         if(state.cooldown > 0){ state.cooldown = Math.max(0, state.cooldown - dt) }
-        const playerY = 340
-        const playerLane = state.position
-        state.obstacles.forEach(obs => {
-          if(obs.lane === playerLane && obs.y > playerY - 24 && obs.y < playerY + 42){
-            state.alive = false
-          }
-        })
-        if(state.alive){ state.score += dt * (state.boost > 0 ? 9 : 6) }
         drawObby()
-        if(state.alive && currentPage === 'games' && currentGame === 'obby'){
+        if(currentPage === 'games' && currentGame === 'obby'){
           obbyAnimationId = requestAnimationFrame(obbyLoop)
         } else {
           obbyAnimationId = null
@@ -1086,83 +1102,61 @@
         const width = canvas.width
         const height = canvas.height
         ctx.clearRect(0,0,width,height)
-        ctx.fillStyle = '#140804'
+        const bg = ctx.createLinearGradient(0,0,width,height)
+        bg.addColorStop(0,'#10050f'); bg.addColorStop(1,'#040308')
+        ctx.fillStyle = bg
         ctx.fillRect(0,0,width,height)
-        const leftTop = 160
-        const rightTop = width - 160
-        const leftBottom = 60
-        const rightBottom = width - 60
-        const horizon = 90
 
-        ctx.fillStyle = 'rgba(255,142,64,0.06)'
-        ctx.beginPath()
-        ctx.moveTo(leftTop, horizon)
-        ctx.lineTo(rightTop, horizon)
-        ctx.lineTo(rightBottom, height)
-        ctx.lineTo(leftBottom, height)
-        ctx.closePath()
-        ctx.fill()
-
-        for(let i=1;i<6;i++){
-          const t = i / 6
-          const xTop = leftTop + (rightTop - leftTop) * t
-          const xBottom = leftBottom + (rightBottom - leftBottom) * t
-          ctx.strokeStyle = 'rgba(255,142,64,0.12)'
-          ctx.lineWidth = 1
-          ctx.beginPath()
-          ctx.moveTo(xTop, horizon)
-          ctx.lineTo(xBottom, height)
-          ctx.stroke()
+        const laneWidth = (width - 120) / 3
+        for(let i=0;i<3;i++){
+          const x = 60 + i * laneWidth
+          ctx.fillStyle = i === gameState.obby.position ? 'rgba(255,142,64,0.18)' : 'rgba(255,142,64,0.08)'
+          ctx.fillRect(x, 100, laneWidth - 14, 260)
+          ctx.strokeStyle = 'rgba(255,142,64,0.20)'
+          ctx.lineWidth = 2
+          ctx.strokeRect(x, 100, laneWidth - 14, 260)
         }
 
-        const laneWidthTop = (rightTop - leftTop) / 3
-        const laneWidthBottom = (rightBottom - leftBottom) / 3
-        ctx.strokeStyle = 'rgba(255,142,64,0.18)'
-        ctx.lineWidth = 2
-        for(let i=1;i<3;i++){
-          const xTop = leftTop + laneWidthTop * i
-          const xBottom = leftBottom + laneWidthBottom * i
+        gameState.obby.pattern.forEach((lane, index) => {
+          const iconX = 70 + lane * laneWidth + laneWidth / 2 - 12
+          const iconY = 32
+          ctx.fillStyle = index < gameState.obby.goalIndex ? 'rgba(33,255,205,0.95)' : 'rgba(255,142,64,0.55)'
           ctx.beginPath()
-          ctx.moveTo(xTop, horizon)
-          ctx.lineTo(xBottom, height)
-          ctx.stroke()
-        }
-
-        gameState.obby.obstacles.forEach(obs => {
-          const progress = Math.min(1, Math.max(0, (obs.y + 60) / (height - horizon)))
-          const xTop = leftTop + obs.lane * laneWidthTop
-          const xBottom = leftBottom + obs.lane * laneWidthBottom
-          const x = xTop + (xBottom - xTop) * progress + 8
-          const w = 100 + progress * 60
-          const y = horizon + (height - horizon) * progress - 20
-          ctx.fillStyle = 'rgba(255,142,64,0.95)'
-          ctx.shadowColor = 'rgba(255,142,64,0.35)'
-          ctx.shadowBlur = 16
-          ctx.fillRect(x, y, w, 28)
-          ctx.shadowBlur = 0
+          ctx.arc(iconX, iconY, 12, 0, Math.PI * 2)
+          ctx.fill()
+          ctx.fillStyle = '#fff'
+          ctx.font = '600 12px Inter'
+          ctx.fillText(index + 1, iconX - 5, iconY + 5)
         })
 
-        const playerProgress = 0.78
-        const playerX = leftTop + gameState.obby.position * laneWidthTop + (leftBottom + gameState.obby.position * laneWidthBottom - (leftTop + gameState.obby.position * laneWidthTop)) * playerProgress + 8
-        const playerW = 120 + playerProgress * 60
-        ctx.fillStyle = gameState.obby.alive ? 'rgba(255,196,141,0.95)' : 'rgba(255,102,56,0.95)'
-        ctx.fillRect(playerX, 340, playerW, 44)
+        gameState.obby.path.forEach((segment, idx) => {
+          const x = 60 + segment.lane * laneWidth
+          const y = 130 + idx * 28
+          ctx.fillStyle = segment.correct ? 'rgba(33,255,205,0.65)' : 'rgba(255,80,61,0.65)'
+          ctx.fillRect(x + 8, y, laneWidth - 30, 20)
+        })
+
+        const selectedX = 60 + gameState.obby.position * laneWidth
+        ctx.strokeStyle = 'rgba(255,255,255,0.85)'
+        ctx.lineWidth = 3
+        ctx.strokeRect(selectedX + 8, 340, laneWidth - 30, 40)
 
         ctx.fillStyle = '#fff1dc'
         ctx.font = '700 22px Inter'
-        ctx.fillText(`Score: ${Math.floor(gameState.obby.score)}m`, 28, 38)
+        ctx.fillText(`Score: ${gameState.obby.score}`, 28, 48)
         ctx.font = '600 16px Inter'
         ctx.fillStyle = '#f4c99a'
-        ctx.fillText(`Boost: ${gameState.obby.boost > 0 ? 'Active' : gameState.obby.cooldown > 0 ? Math.ceil(gameState.obby.cooldown)+'s' : 'Ready'}`, 28, 66)
+        const statusLabel = gameState.obby.alive ? 'Building' : 'Completed'
+        ctx.fillText(`Status: ${statusLabel}`, 28, 78)
         if(!gameState.obby.alive){
           ctx.fillStyle = 'rgba(0,0,0,0.65)'
-          ctx.fillRect(120, 160, 520, 120)
+          ctx.fillRect(140, 160, 480, 120)
           ctx.fillStyle = 'rgba(255,102,56,0.95)'
           ctx.font = '700 32px Inter'
-          ctx.fillText('Game Over', 260, 215)
+          ctx.fillText('Path Complete', 220, 210)
           ctx.font = '500 18px Inter'
           ctx.fillStyle = '#fff1dc'
-          ctx.fillText('Press Restart to run again', 236, 255)
+          ctx.fillText('Restart to generate a new neon route', 218, 245)
         }
       }
 
